@@ -36,8 +36,20 @@ const requestLoggerMiddleware =
     next()
   }
 
-app.use(requestLoggerMiddleware({ logger: console.log }))
+app.use((req, res, next) => {
+  if (req.body.emails !== undefined) {
+    req.body.emails = req.body.emails.map(email => {
+      return { ...email, type: email.type || 'work' }
+    })
 
+    console.log('RECV emails << ', req.body.emails)
+    // console.log(req.body.emails)
+  }
+
+  next()
+})
+
+app.use(requestLoggerMiddleware({ logger: console.log }))
 SCIMMY.Resources.declare(SCIMMY.Resources.User)
   .ingress(async (_, data) => {
     console.log('user ingress', data)
