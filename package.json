@@ -1,0 +1,23 @@
+{
+  "name": "entra-scim-wrapper",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon --env-file .env index.js"
+  },
+  "keywords": [],
+  "author": "vojtech@zicha.name",
+  "license": "MTI",
+  "description": "",
+  "dependencies": {
+    "express": "^4.19.2",
+    "scim-query-filter-parser": "^2.0.4",
+    "scimmy": "^1.2.2",
+    "scimmy-routers": "^1.2.0"
+  },
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
