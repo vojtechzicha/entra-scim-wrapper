@@ -8,6 +8,7 @@ const clientId = ENTRA_CLIENT_ID
 const clientSecret = ENTRA_CLIENT_SECRET
 
 const token = await getToken(tenantId, clientId, clientSecret)
+console.log(token)
 
 const newFetch = async (url, options = {}) => {
   const headers = options.headers || new Headers()

@@ -1,12 +1,15 @@
 import SCIMMY from 'scimmy'
 import SCIMMYRouters from 'scimmy-routers'
 import express from 'express'
-import { compileFilter, compileSorter } from 'scim-query-filter-parser'
 
 import { getAllUsers } from './microsoft-graph/getAllUsers.js'
 import { getUser } from './microsoft-graph/getUser.js'
 import { createUser } from './microsoft-graph/createUser.js'
 import { updateUser } from './microsoft-graph/updateUser.js'
+
+import { getAllGroups } from './microsoft-graph/getAllGroups.js'
+
+import egressHandler from './scim/egressHandler.js'
 
 const app = express()
 
@@ -30,8 +33,8 @@ const requestLoggerMiddleware =
 app.use(requestLoggerMiddleware({ logger: console.log }))
 
 SCIMMY.Resources.declare(SCIMMY.Resources.User)
-  .ingress(async (resource, data) => {
-    console.log('ingress')
+  .ingress(async (_, data) => {
+    console.log('user ingress', data)
     if (data.id === undefined && data.userName === undefined) throw new Error('Invalid data')
 
     const user = await getUser(data.id || data.userName)
@@ -45,27 +48,23 @@ SCIMMY.Resources.declare(SCIMMY.Resources.User)
     }
   })
   .egress(async resource => {
-    console.log('egress')
-    let users = await getAllUsers()
+    console.log('user egress', resource.id)
 
-    if (resource.filter !== undefined) users = users.filter(compileFilter(resource.filter.expression))
+    const users = await getAllUsers()
 
-    if (resource?.constraints?.sortBy !== undefined) {
-      const sorter = compileSorter(resource.constraints.sortBy)
-      users.sort((a, b) => (resource.constraints.sortOrder !== 'descending' ? sorter(a, b) : sorter(b, a)))
-    }
-
-    if (resource?.constraints?.count !== undefined || resource?.constraints?.startIndex !== undefined) {
-      const startIndex = Math.max(resource.constraints.startIndex || 1, 1) - 1
-      const count = Math.max(resource.constraints.count || Number.MAX_SAFE_INTEGER, users.length - startIndex + 1)
-      users = users.slice(startIndex, startIndex + count)
-    }
-
-    return users
+    return await egressHandler(users, resource)
   })
   .degress(resource => {
-    console.log('User deleted:', resource)
+    console.log('user degress', resource.id)
   })
+
+SCIMMY.Resources.declare(SCIMMY.Resources.Group).egress(async resource => {
+  console.log('group egress', resource.id)
+
+  const groups = await getAllGroups()
+
+  return await egressHandler(groups, resource)
+})
 
 app.use(
   process.env.SCIM_PREFIX_URL || '/scim/v2',

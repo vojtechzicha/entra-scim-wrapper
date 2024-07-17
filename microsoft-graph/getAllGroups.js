@@ -1,10 +1,10 @@
 import fetch from './connection.js'
-import { mapMicrosoftUserToScim } from './scimMappers.js'
+import { mapMicrosoftGroupToScim } from './scimMappers.js'
 
-export async function getAllUsers() {
+export async function getAllGroups() {
   let value = [],
     response = null,
-    link = 'https://graph.microsoft.com/v1.0/users'
+    link = 'https://graph.microsoft.com/v1.0/groups'
 
   while (link !== null) {
     response = await fetch(link)
@@ -19,5 +19,5 @@ export async function getAllUsers() {
     }
   }
 
-  return value.map(mapMicrosoftUserToScim)
+  return value.map(mapMicrosoftGroupToScim)
 }

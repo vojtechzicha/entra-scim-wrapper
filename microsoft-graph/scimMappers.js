@@ -1,4 +1,4 @@
-export function mapMicrosoftToScim(user) {
+export function mapMicrosoftUserToScim(user) {
   return {
     emails: [
       { value: user.userPrincipalName, type: 'work', primary: true },
@@ -19,7 +19,20 @@ export function mapMicrosoftToScim(user) {
   }
 }
 
-export function mapScimToMicrosoft(user) {
+export function mapMicrosoftGroupToScim(group) {
+  return {
+    id: group.id,
+    externalId: group.id,
+    displayName: group.displayName,
+    meta: {
+      created: group.createdDateTime,
+      lastModified: group.lastModifiedDateTime,
+      resourceType: 'Group'
+    }
+  }
+}
+
+export function mapScimUserToMicrosoft(user) {
   return {
     userPrincipalName: user.userName,
     id: user.id,

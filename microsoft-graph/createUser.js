@@ -1,5 +1,5 @@
 import fetch from './connection.js'
-import { mapScimToMicrosoft, mapMicrosoftToScim } from './scimMappers.js'
+import { mapScimUserToMicrosoft, mapMicrosoftUserToScim } from './scimMappers.js'
 
 export async function createUser(scimUser) {
   const response = await (
@@ -9,7 +9,7 @@ export async function createUser(scimUser) {
         'Content-Type': 'application/json'
       }),
       body: JSON.stringify({
-        ...mapScimToMicrosoft(scimUser),
+        ...mapScimUserToMicrosoft(scimUser),
         passwordProfile: { forceChangePasswordNextSignIn: true, password: 'asdf1234!' }
       })
     })
@@ -20,5 +20,5 @@ export async function createUser(scimUser) {
     throw new Error('Unknown error')
   }
 
-  return mapMicrosoftToScim(response)
+  return mapMicrosoftUserToScim(response)
 }
