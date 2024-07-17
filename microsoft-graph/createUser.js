@@ -10,7 +10,7 @@ export async function createUser(scimUser) {
       }),
       body: JSON.stringify({
         ...mapScimUserToMicrosoft(scimUser),
-        passwordProfile: { forceChangePasswordNextSignIn: true, password: 'asdf1234!' }
+        passwordProfile: { forceChangePasswordNextSignIn: true, password: 'asdf1234!' } // TODO: move to env variable
       })
     })
   ).json()

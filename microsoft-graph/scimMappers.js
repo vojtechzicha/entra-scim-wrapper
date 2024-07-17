@@ -32,6 +32,16 @@ export function mapMicrosoftGroupToScim(group) {
   }
 }
 
+export function mapScimGroupToMicrosoft(group) {
+  return {
+    displayName: group.displayName,
+    id: group.id,
+    mailEnabled: false, // TODO: Implement mailEnabled
+    mailNickname: 'NotSet',
+    securityEnabled: true
+  }
+}
+
 export function mapScimUserToMicrosoft(user) {
   return {
     userPrincipalName: user.userName,

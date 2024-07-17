@@ -8,6 +8,9 @@ import { createUser } from './microsoft-graph/createUser.js'
 import { updateUser } from './microsoft-graph/updateUser.js'
 
 import { getAllGroups } from './microsoft-graph/getAllGroups.js'
+import { getGroup } from './microsoft-graph/getGroup.js'
+import { createGroup } from './microsoft-graph/createGroup.js'
+import { updateGroup } from './microsoft-graph/updateGroup.js'
 
 import egressHandler from './scim/egressHandler.js'
 
@@ -58,13 +61,34 @@ SCIMMY.Resources.declare(SCIMMY.Resources.User)
     console.log('user degress', resource.id)
   })
 
-SCIMMY.Resources.declare(SCIMMY.Resources.Group).egress(async resource => {
-  console.log('group egress', resource.id)
+SCIMMY.Resources.declare(SCIMMY.Resources.Group)
+  .egress(async resource => {
+    console.log('group egress', resource.id)
 
-  const groups = await getAllGroups()
+    const groups = await getAllGroups()
 
-  return await egressHandler(groups, resource)
-})
+    return await egressHandler(groups, resource)
+  })
+  .ingress(async (_, data) => {
+    console.log('group ingress', data)
+    if (data.id === undefined) {
+      console.log('Creating group')
+      return await createGroup(data)
+    }
+
+    const group = await getGroup(data.id || data.displayName)
+
+    if (group !== null) {
+      console.log('Group exists:', data.displayName)
+      return await updateGroup(group.id, data)
+    } else {
+      console.log('Creating group')
+      return await createGroup(data)
+    }
+  })
+  .degress(resource => {
+    console.log('group degress', resource.id)
+  })
 
 app.use(
   process.env.SCIM_PREFIX_URL || '/scim/v2',
