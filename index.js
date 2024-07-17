@@ -1,6 +1,7 @@
 import SCIMMY from 'scimmy'
 import SCIMMYRouters from 'scimmy-routers'
 import express from 'express'
+import bp from 'body-parser'
 
 import { getAllUsers } from './microsoft-graph/getAllUsers.js'
 import { getUser } from './microsoft-graph/getUser.js'
@@ -15,6 +16,7 @@ import { updateGroup } from './microsoft-graph/updateGroup.js'
 import egressHandler from './scim/egressHandler.js'
 
 const app = express()
+app.use(bp.json({ type: req => true }))
 
 const resDotSendInterceptor = (res, send) => content => {
   res.contentBody = content
@@ -25,7 +27,8 @@ const resDotSendInterceptor = (res, send) => content => {
 const requestLoggerMiddleware =
   ({ logger }) =>
   (req, res, next) => {
-    logger('RECV <<<', req.method, req.url, req.hostname, req.headers, req.body)
+    logger('RECV <<<', req.method, req.url, req.hostname, req.headers, req.body, req.para)
+    console.log('RECV body <<<', req.body)
     res.on('finish', () => {
       logger('SEND >>>', res.statusCode, res.statusMessage, res.getHeaders(), res.contentBody)
     })

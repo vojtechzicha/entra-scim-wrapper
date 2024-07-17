@@ -11,6 +11,7 @@
   "license": "MTI",
   "description": "",
   "dependencies": {
+    "body-parser": "^1.20.2",
     "express": "^4.19.2",
     "scim-query-filter-parser": "^2.0.4",
     "scimmy": "^1.2.2",
