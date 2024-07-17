@@ -46,6 +46,26 @@ app.use((req, res, next) => {
     // console.log(req.body.emails)
   }
 
+  if (req.body.meta === null) req.body.meta = undefined
+  if (req.body.name === null) req.body.name = undefined
+  if (req.body.nickName === null) req.body.nickName = undefined
+  if (req.body.profileUrl === null) req.body.profileUrl = undefined
+  if (req.body.title === null) req.body.title = undefined
+  if (req.body.userType === null) req.body.userType = undefined
+  if (req.body.preferredLanguage === null) req.body.preferredLanguage = undefined
+  if (req.body.locale === null) req.body.locale = undefined
+  if (req.body.timezone === null) req.body.timezone = undefined
+  if (req.body.active === null) req.body.active = undefined
+  if (req.body.password === null) req.body.password = undefined
+  if (req.body.phoneNumbers === null) req.body.phoneNumbers = undefined
+  if (req.body.ims === null) req.body.ims = undefined
+  if (req.body.photos === null) req.body.photos = undefined
+  if (req.body.addresses === null) req.body.addresses = undefined
+  if (req.body.groups === null) req.body.groups = undefined
+  if (req.body.entitlements === null) req.body.entitlements = undefined
+  if (req.body.roles === null) req.body.roles = undefined
+  if (req.body.x509Certificates === null) req.body.x509Certificates = undefined
+
   next()
 })
 
